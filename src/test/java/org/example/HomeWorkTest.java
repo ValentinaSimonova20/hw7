@@ -1,18 +1,12 @@
 package org.example;
 
-import lombok.NonNull;
+
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static org.example.Action.destroy;
-import static org.example.Action.look;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class HomeWorkTest {
@@ -39,7 +33,7 @@ class HomeWorkTest {
                 "6\n" +
                 "4\n" +
                 "7");
-        testCase.parseInput("20 7\n" +
+        testCase.parseInput("8 7\n" +
                 "L 5\n" +
                 "D 5\n" +
                 "L 4\n" +

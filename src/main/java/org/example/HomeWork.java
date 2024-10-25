@@ -1,6 +1,7 @@
 package org.example;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HomeWork {
@@ -11,7 +12,23 @@ public class HomeWork {
      * <a href="https://acm.timus.ru/problem.aspx?space=1&num=1439">https://acm.timus.ru/problem.aspx?space=1&num=1439</a>
      */
     public List<Integer> getOriginalDoorNumbers(int maxDoors, List<Action> actionList) {
-        return null;
+        List<Integer> result = new ArrayList<>();
+        Treap treap = new Treap();
+        fillTreap(treap, maxDoors);
+        actionList.forEach(action -> {
+            if(action.isLook) {
+                result.add(treap.get(action.doorNumber));
+            } else {
+                treap.updateNodes(action.doorNumber);
+            }
+        });
+        return result;
+    }
+
+    private void fillTreap(Treap treap, int maxDoors) {
+        for(int i = 1; i < maxDoors; i++) {
+            treap.add(i);
+        }
     }
 
     /**

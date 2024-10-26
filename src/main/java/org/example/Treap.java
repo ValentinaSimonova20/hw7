@@ -2,7 +2,8 @@ package org.example;
 
 import lombok.Getter;
 
-import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -21,7 +22,19 @@ public class Treap {
 
     Node root;
 
+    int k;
+
+    int kth;
+
+    int size;
+
     public Treap() {
+    }
+
+    public Treap(int k, int size) {
+        this.k = k;
+        this.size = size;
+        this.kth = k;
     }
 
 
@@ -35,24 +48,51 @@ public class Treap {
     }
 
     public void updateNodes(Integer key) {
-        updateNodes(root, key);
-    }
-
-    private void updateNodes(Node node, Integer key) {
-        Node right = node.split(key)[1];
-        searchNode(root, key).actualDoorNumber++;
-
-        increaseActualDoorNumber(right.right);
+        updateNode(root, key);
     }
 
 
-    private void increaseActualDoorNumber(Node cur) {
+    private void updateNode(Node cur, Integer key) {
+        if(cur != null) {
+            if(key.compareTo(cur.key) > 0) {
+                updateNode(cur.right, key);
+                cur.delta++;
+                updateDelta(cur.left);
+            } else {
+                cur.actualDoorNumber++;
+                cur.actualDoorNumber += cur.delta;
+                updateNode(cur.left, key);
+                updateNode(cur.right, key);
+            }
+        }
+    }
+
+    public List<String> inorder() {
+        List<String> res = new ArrayList<>();
+        inorder(root, res);
+        return res;
+    }
+
+    private void inorder(Node cur, List<String> res) {
         if (cur == null) {
             return;
         }
-        increaseActualDoorNumber(cur.left);
-        cur.actualDoorNumber++;
-        increaseActualDoorNumber(cur.right);
+        inorder(cur.left, res);
+        res.add(cur.toString());
+        inorder(cur.right, res);
+    }
+
+
+
+    public boolean isEmpty() {
+        return root == null;
+    }
+    private void updateDelta(Node cur) {
+        if (cur != null){
+            cur.delta++;
+            updateDelta(cur.left);
+            updateDelta(cur.right);
+        }
     }
 
     private Node searchNode(Node cur, Integer key) {
@@ -121,6 +161,7 @@ public class Treap {
         Integer key;
         int priority;
         int actualDoorNumber;
+        int delta;
         Node left;
         Node right;
 
@@ -138,33 +179,7 @@ public class Treap {
             this.left = left;
             this.right = right;
             this.actualDoorNumber = key;
-        }
-
-        public Node[] split(Integer key) {
-            Node tmp = null;
-
-            Node[] res = (Node[]) Array.newInstance(this.getClass(), 2);
-
-            if (this.key.compareTo(key) < 0) {
-                if (this.right == null) {
-                    res[1] = null;
-                } else {
-                    Node[] rightSplit = this.right.split(key);
-                    res[1] = rightSplit[1];
-                    tmp = rightSplit[0];
-                }
-                res[0] = new Node(this.key, priority, this.left, tmp);
-            } else {
-                if (left == null) {
-                    res[0] = null;
-                } else {
-                    Node[] leftSplit = this.left.split(key);
-                    res[0] = leftSplit[0];
-                    tmp = leftSplit[1];
-                }
-                res[1] = new Node(this.key, priority, tmp, this.right);
-            }
-            return res;
+            this.delta = 0;
         }
 
         @Override

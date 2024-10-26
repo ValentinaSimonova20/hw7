@@ -26,7 +26,7 @@ public class HomeWork {
     }
 
     private void fillTreap(Treap treap, int maxDoors) {
-        for(int i = 1; i < maxDoors; i++) {
+        for(int i = 1; i < maxDoors + 1; i++) {
             treap.add(i);
         }
     }
@@ -45,7 +45,11 @@ public class HomeWork {
      * _ <b>4</b> => 4
      */
     public List<Integer> getLeaveOrder(int maxUnits, int leaveInterval) {
-        return null;
+        List<Integer> result = new ArrayList<>();
+        for(int i = 1; i < maxUnits + 1; i++) {
+            result.add(i);
+        }
     }
+
 
 }

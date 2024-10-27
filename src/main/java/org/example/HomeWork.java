@@ -46,9 +46,15 @@ public class HomeWork {
      */
     public List<Integer> getLeaveOrder(int maxUnits, int leaveInterval) {
         List<Integer> result = new ArrayList<>();
+        Treap treap = new Treap(leaveInterval, maxUnits);
+        fillTreap(treap, maxUnits);
         for(int i = 1; i < maxUnits + 1; i++) {
-            result.add(i);
+            int kThElement = treap.takeKth();
+            result.add(kThElement);
+            treap.remove(kThElement);
         }
+
+        return result;
     }
 
 

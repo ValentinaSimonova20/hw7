@@ -2,8 +2,6 @@ package org.example;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -28,18 +26,63 @@ public class Treap {
 
     int size;
 
+
+
     public Treap() {
     }
 
     public Treap(int k, int size) {
         this.k = k;
         this.size = size;
-        this.kth = k;
+        this.kth = 0;
     }
 
 
     public void add(Integer key) {
         root = insert(root, key);
+    }
+
+    public int takeKth() {
+        kth = (kth + k - 1) % (size);
+        return searchByKthPos();
+    }
+
+    public void remove(Integer key) {
+        root = deleteNode(root, key);
+        size--;
+    }
+
+    private Node deleteNode(Node cur, Integer key) {
+        if (cur == null)
+            return cur;
+
+        if (key.compareTo(cur.key) < 0)
+            cur.left = deleteNode(cur.left, key);
+        else if (key.compareTo(cur.key) > 0)
+            cur.right = deleteNode(cur.right, key);
+
+            // IF KEY IS AT ROOT
+
+            // If left is NULL
+        else if (cur.left == null) {
+            Node temp = cur.right;
+            cur = temp;  // Make right child as root
+        }
+        // If Right is NULL
+        else if (cur.right == null) {
+            Node temp = cur.left;
+            cur = temp;  // Make left child as root
+        }
+        // If key is at root and both left and right are not NULL
+        else if (cur.left.priority < cur.right.priority) {
+            cur = leftRotation(cur);
+            cur.left = deleteNode(cur.left, key);
+        } else {
+            cur = rightRotation(cur);
+            cur.right = deleteNode(cur.right, key);
+        }
+
+        return cur;
     }
 
 
@@ -67,26 +110,27 @@ public class Treap {
         }
     }
 
-    public List<String> inorder() {
-        List<String> res = new ArrayList<>();
-        inorder(root, res);
-        return res;
+    public int searchByKthPos() {
+        Node result = new Node(-1);
+        searchByKthPos(root, result);
+        currentIndex = 0;
+        return result.key;
     }
 
-    private void inorder(Node cur, List<String> res) {
+    static int currentIndex = 0;
+
+    private void searchByKthPos(Node cur, Node result) {
         if (cur == null) {
             return;
         }
-        inorder(cur.left, res);
-        res.add(cur.toString());
-        inorder(cur.right, res);
+        searchByKthPos(cur.left, result);
+        if(currentIndex == kth) {
+            result.key = cur.key;
+        }
+        currentIndex++;
+        searchByKthPos(cur.right, result);
     }
 
-
-
-    public boolean isEmpty() {
-        return root == null;
-    }
     private void updateDelta(Node cur) {
         if (cur != null){
             cur.delta++;
@@ -166,7 +210,7 @@ public class Treap {
         Node right;
 
         public Node(Integer key) {
-            this(key, RND.nextInt());
+            this(key, RND.nextInt(10));
         }
 
         public Node(Integer key, int priority) {
@@ -184,7 +228,7 @@ public class Treap {
 
         @Override
         public String toString() {
-            return String.format("(%d,%d,%d)", key, priority, actualDoorNumber);
+            return String.format("(%d,%d)", key, priority);
         }
     }
 }
